@@ -1,0 +1,7 @@
+# image processing
+Pillow
+
+# library used to delete the bg
+rembg
+
+Flask
