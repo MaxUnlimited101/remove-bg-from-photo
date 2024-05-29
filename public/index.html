@@ -1,9 +1,156 @@
 <!DOCTYPE html>
-<html>
-    <header>
-        <title>Remove background</title>
-    </header>
-    <body>
-        Here will be the remove bg tool...
-    </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove background</title>
+    <style>
+        .drag-drop-area {
+            width: 300px;
+            height: 200px;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin: 0 auto;
+            font-family: Arial, sans-serif;
+            color: #666;
+        }
+
+        .drag-drop-area.hover {
+            border-color: #666;
+            background-color: #f0f0f0;
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        .file-list {
+            margin-top: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .remove-button {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            padding: 5px 10px;
+        }
+
+        .submit-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="drag-drop-area" id="drag-drop-area">
+    Drag & Drop files here or click to select files
+</div>
+<input type="file" id="file-input" multiple>
+<div class="file-list" id="file-list"></div>
+<button class="submit-button" id="submit-button">Submit</button>
+
+<script>
+    const dragDropArea = document.getElementById('drag-drop-area');
+    const fileInput = document.getElementById('file-input');
+    const fileList = document.getElementById('file-list');
+    const submitButton = document.getElementById('submit-button');
+    let filesArray = [];
+
+    dragDropArea.addEventListener('dragover', (event) => {
+        event.preventDefault();
+        dragDropArea.classList.add('hover');
+    });
+
+    dragDropArea.addEventListener('dragleave', () => {
+        dragDropArea.classList.remove('hover');
+    });
+
+    dragDropArea.addEventListener('drop', (event) => {
+        event.preventDefault();
+        dragDropArea.classList.remove('hover');
+        const files = event.dataTransfer.files;
+        handleFiles(files);
+    });
+
+    dragDropArea.addEventListener('click', () => {
+        fileInput.click();
+    });
+
+    fileInput.addEventListener('change', () => {
+        const files = fileInput.files;
+        handleFiles(files);
+    });
+
+    function handleFiles(files) {
+        for (const file of files) {
+            filesArray.push(file);
+        }
+        updateFileList();
+    }
+
+    function updateFileList() {
+        fileList.innerHTML = '';
+        filesArray.forEach((file, index) => {
+            const listItem = document.createElement('div');
+            listItem.className = 'file-item';
+            listItem.innerHTML = `${file.name} (${file.size} bytes) <button class="remove-button" onclick="removeFile(${index})">Remove</button>`;
+            fileList.appendChild(listItem);
+        });
+    }
+
+    function removeFile(index) {
+        filesArray.splice(index, 1);
+        updateFileList();
+    }
+
+    submitButton.addEventListener('click', () => {
+        if (filesArray.length > 0) {
+            const formData = new FormData();
+            filesArray.forEach(file => {
+                formData.append('files[]', file);
+            });
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            }).then(response => {
+                if (response.ok) {
+                    alert('Files successfully uploaded');
+                    filesArray = [];
+                    updateFileList();
+                } else {
+                    alert('Failed to process files');
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while processing files');
+            });
+        } else {
+            alert('No files to upload');
+        }
+    });
+</script>
+
+</body>
 </html>
