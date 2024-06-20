@@ -51,15 +51,21 @@ def upload_files():
         print(f"processing file: {name}")
         out_name = os.path.join('uploads', name)
         remove_bg(file, out_name)
-        if len(files) == 1:
-            return send_file(out_name, as_attachment=True, download_name=name)
-        zipf.write(out_name)#send_file(res, as_attachment=True, download_name=name)
+        # if len(files) == 1:
+        #     return send_file(out_name, as_attachment=True, download_name=name)
+        print(out_name)
+        zipf.write(out_name, out_name.split('\\')[1])#send_file(res, as_attachment=True, download_name=name)
+        os.remove(out_name)
 
     zipf.close()
-    return send_file('./uploads/images.zip', as_attachment=True, download_name='images.zip')
+    #return send_file('./uploads/images.zip', as_attachment=True, download_name='remove-background.zip')
+    return jsonify({'message': 'OK'}), 200
 
 def remove_bg(file, name: str) -> Image:
     inp = Image.open(file)
     out = remove(inp)
     out.save(name)
     
+@app.route('/uploads/images.zip', methods=['GET'])
+def download_result():
+    return send_file('./uploads/images.zip', as_attachment=True, download_name='remove-background.zip')

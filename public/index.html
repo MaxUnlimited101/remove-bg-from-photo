@@ -130,15 +130,15 @@
             filesArray.forEach(file => {
                 formData.append('files[]', file);
             });
-
             fetch('/upload', {
                 method: 'POST',
                 body: formData
             }).then(response => {
                 if (response.ok) {
-                    alert('Files successfully uploaded');
+                    //alert('Files successfully processed');
                     filesArray = [];
                     updateFileList();
+                    window.location.href = "/uploads/images.zip"
                 } else {
                     alert('Failed to process files');
                 }
