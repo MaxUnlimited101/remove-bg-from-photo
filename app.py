@@ -54,6 +54,10 @@ def upload_files():
         # if len(files) == 1:
         #     return send_file(out_name, as_attachment=True, download_name=name)
         print(out_name)
+        print(out_name)
+        print(out_name)
+        print(out_name)
+        print(out_name)
         zipf.write(out_name, out_name.split('\\')[1])#send_file(res, as_attachment=True, download_name=name)
         os.remove(out_name)
 
