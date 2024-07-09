@@ -1,6 +1,7 @@
 # This project specific files/dirs
 uploads/
 .vscode/
+u2net.onnx
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

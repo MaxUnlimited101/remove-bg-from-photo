@@ -1,5 +1,8 @@
 FROM python:3.10-slim
 
+# https://github.com/danielgatis/rembg/releases/download/v0.0.0/u2net.onnx file for rembg
+COPY u2net.onnx /root/.u2net/u2net.onnx
+
 WORKDIR /app
 
 COPY . /app
